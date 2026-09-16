@@ -243,7 +243,7 @@ static std::string collectDownloadChunks(int timeoutMs) {
 
     // Replace the global EventWaiter sink for this call only; restored at
     // the end via g_waiter.install(g_impl).
-    logos_test::ScopedEventSink localSink(
+    auto localSink = std::make_unique<logos_test::ScopedEventSink>(
         [&](const std::string& name, const std::string& data) {
             if (name == "storageDownloadProgress") {
                 // Extract chunk field from JSON payload.
@@ -267,8 +267,11 @@ static std::string collectDownloadChunks(int timeoutMs) {
     std::unique_lock<std::mutex> lock(m);
     cv.wait_for(lock, std::chrono::milliseconds(timeoutMs),
                 [&] { return done; });
+    lock.unlock();
 
-    // Restore normal waiter.
+    // Restore normal waiter. Drop localSink first: its destructor clears the
+    // global slot, which would otherwise unregister the waiter installed here.
+    localSink.reset();
     g_waiter.install(g_impl);
 
     return success ? collected : std::string();
