@@ -177,10 +177,13 @@ static void ensureRestarted(const json& extraConfig = json::object()) {
     g_impl = new StorageModuleImpl();
     g_waiter.install(g_impl);
 
+    // Offline node: bootstrapping against the public network makes start() slow and flaky.
     json cfg = {
         {"data-dir", g_dataDir.string()},
         {"log-level", "DEBUG"},
         {"nat", "extip:127.0.0.1"},
+        {"listen-ip", "127.0.0.1"},
+        {"no-bootstrap-node", true},
         {"log-file", logFile},
     };
     cfg.update(extraConfig);
