@@ -91,7 +91,9 @@ sections:
           sleep 2
           ./logosctl/bin/logosctl --config-dir ./session call storage_module destroy
         code_block: |
+          sleep 5
           logosctl call storage_module stop
+          sleep 2
           logosctl call storage_module destroy
         expect_contains:
           - '"success":true'
