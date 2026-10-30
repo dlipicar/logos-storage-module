@@ -207,7 +207,9 @@ sections:
           ./logosctl/bin/logosctl --config-dir ./session call storage_module destroy \
             | jq -e '.result | .error, .success'
         code_block: |
+          sleep 5
           logosctl --config-dir ./session call storage_module stop
+          sleep 2
           logosctl --config-dir ./session call storage_module destroy
         expect_contains:
           - "true"

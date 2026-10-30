@@ -176,7 +176,9 @@ sections:
           $CMD call storage_module destroy | jq -e '.result | .error, .success'
         code_block: |
           logosctl --config-dir=./session-1 module load storage_module
+          sleep 5
           logosctl --config-dir=./session-1 call storage_module stop
+          sleep 2
           logosctl --config-dir=./session-1 call storage_module destroy
         expect_contains:
           - "true"
@@ -288,7 +290,13 @@ sections:
         code_block: |
           for id in 2 3 4; do
             logosctl --config-dir=./session-$id module load storage_module
+          done
+          sleep 5
+          for id in 2 3 4; do
             logosctl --config-dir=./session-$id call storage_module stop
+          done
+          sleep 2
+          for id in 2 3 4; do
             logosctl --config-dir=./session-$id call storage_module destroy
           done
         expect_contains:
@@ -491,7 +499,13 @@ sections:
         code_block: |
           for id in 5 6; do
             logosctl --config-dir=./session-$id module load storage_module
+          done
+          sleep 5
+          for id in 5 6; do
             logosctl --config-dir=./session-$id call storage_module stop
+          done
+          sleep 2
+          for id in 5 6; do
             logosctl --config-dir=./session-$id call storage_module destroy
           done
         expect_contains:
